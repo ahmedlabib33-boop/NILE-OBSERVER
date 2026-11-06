@@ -149,6 +149,9 @@ def seed_sources(db):
         if existing:
             if identifier in CONNECTORS:
                 existing.update_interval = CONNECTORS[identifier].interval
+            # Auto-enable unified_radar at startup
+            if identifier == "unified_radar":
+                existing.enabled = True
             continue
         status, auth, error = "pending", "not_required", None
         if identifier in ("tomtom", "aisstream", "openaq"):
@@ -166,6 +169,8 @@ def seed_sources(db):
             )
         if identifier == "overpass_inventory":
             status, error = "pending", "No regional camera metadata query has been run"
+        # Auto-enable unified_radar on creation
+        enabled = identifier == "unified_radar"
         db.add(
             Source(
                 id=identifier,
@@ -177,6 +182,7 @@ def seed_sources(db):
                 status=status,
                 auth_state=auth,
                 error=error,
+                enabled=enabled,
             )
         )
     db.commit()

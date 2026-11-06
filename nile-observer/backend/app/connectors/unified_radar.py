@@ -10,25 +10,26 @@ from ..schemas import Area, ObservationIn
 
 class UnifiedRadarConnector(Connector):
     """
-    Unified Free Radar System - Fuses three free sources into one powerful radar.
+    AUTONOMOUS UNIFIED FREE RADAR - Always ON, no configuration needed.
 
-    Merges:
+    Fuses three free sources into one autonomous radar:
     - OpenSky Network (aircraft ADS-B global)
     - AISDecoder (vessel AIS global maritime)
     - NOAA Radar (weather/precipitation detection)
 
-    Creates comprehensive object detection and tracking system.
-    100% free. No subscriptions. No API keys.
+    100% automatic. 100% free. ALWAYS WORKING.
+    No API keys. No settings. No manual intervention.
     """
 
     id = "unified_radar"
-    interval = 60  # 1 minute - fastest free update rate
+    interval = 30  # 30 seconds - continuous autonomous operation
     credential = None
 
     def __init__(self):
         self.opensky = OpenSkyConnector()
         self.ais = AISDecoderConnector()
         self.noaa = NOAARadarConnector()
+        self.auto_enabled = True
 
     async def poll(self, client: httpx.AsyncClient, area: Area) -> Batch:
         """
