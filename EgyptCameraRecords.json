@@ -1,0 +1,32 @@
+[
+  {
+    "id": "earthcam_2050306897812017901",
+    "name": "Soma Bay Beach Egypt",
+    "operator": "EarthCam Public Cam",
+    "city": "Safaga",
+    "region": "Safaga, Egypt",
+    "category": "Middle East & Africa",
+    "latitude": 26.835325,
+    "longitude": 33.95462,
+    "feedType": "web",
+    "streamUrl": "http://www.addicted-sports.com/webcam/somabay/caribbeanworld/",
+    "webEmbedUrl": "http://www.addicted-sports.com/webcam/somabay/caribbeanworld/",
+    "source": "EarthCam.com",
+    "status": "ONLINE"
+  },
+  {
+    "id": "earthcam_-2447276061889142898",
+    "name": "Cairo - The Pyramids of Giza and the Sphinx",
+    "operator": "EarthCam Public Cam",
+    "city": "cairo",
+    "region": "cairo, Egypt",
+    "category": "Middle East & Africa",
+    "latitude": 29.786504,
+    "longitude": 31.226664,
+    "feedType": "web",
+    "streamUrl": "https://www.worldlivecamera.com/en/webcam/great-pyramid-of-giza.html",
+    "webEmbedUrl": "https://www.worldlivecamera.com/en/webcam/great-pyramid-of-giza.html",
+    "source": "EarthCam.com",
+    "status": "ONLINE"
+  }
+]
