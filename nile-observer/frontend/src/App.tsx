@@ -11,7 +11,6 @@ import {
   Activity,
   ArrowDownToLine,
   ArrowUpRight,
-  Camera,
   ChevronRight,
   CircleHelp,
   Compass,
@@ -20,15 +19,12 @@ import {
   History as HistoryIcon,
   Layers,
   Menu,
-  Plane,
   Radio,
   Radar,
   RefreshCw,
   Satellite as SatelliteIcon,
   Settings as SettingsIcon,
-  Ship,
   SlidersHorizontal,
-  TrafficCone,
   X,
   type LucideIcon,
 } from "lucide-react";
@@ -36,12 +32,11 @@ import { api, getToken } from "./api";
 import { date, LanguageContext, number, useT } from "./i18n";
 import type { Area, Observation, Scene, Source } from "./types";
 const RadarMap = lazy(() => import("./RadarMap"));
-const Cameras = lazy(() => import("./Cameras"));
 const Satellite = lazy(() => import("./Satellite"));
 const Hub = lazy(() => import("./Hub"));
 const History = lazy(() => import("./History"));
 const SourceDiagnostics = lazy(() => import("./SourceDiagnostics"));
-import { Action, Empty, Evidence, Notice, ObservationTable } from "./ui";
+import { Action, Empty, Evidence, Notice } from "./ui";
 
 const pages: [string, LucideIcon][] = [
   ["satellite", SatelliteIcon],
@@ -619,13 +614,7 @@ function Workspace({
                               onClick={() => void select(o)}
                             >
                               <div className="feed-icon">
-                                {o.source_type === "adsb" ? (
-                                  <Plane size={18} />
-                                ) : o.source_type === "ais" ? (
-                                  <Ship size={18} />
-                                ) : (
-                                  <Radio size={18} />
-                                )}
+                                <Radio size={18} />
                               </div>
                               <div>
                                 <strong>
