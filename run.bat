@@ -16,9 +16,9 @@ echo   System: 100%% Free, Zero Configuration, Always ON
 echo   Status: Autonomous 30-second polling cycle
 echo.
 
-if not exist "%~dp0nile-observer\scripts\start.bat" (
+if not exist "%~dp0wave-repo\run.bat" (
   echo   ERROR: Missing application launcher
-  echo   Expected: nile-observer\scripts\start.bat
+  echo   Expected: wave-repo\run.bat
   echo.
   exit /b 2
 )
@@ -26,7 +26,7 @@ if not exist "%~dp0nile-observer\scripts\start.bat" (
 echo   ✓ Launching application...
 echo.
 echo   Access URL: http://127.0.0.1:8000
-echo   Token: nile-observer\data\access-token
+echo   Token: data/access-token
 echo.
 echo   Features:
 echo   - Satellite Radar interface (unified detection)
@@ -38,5 +38,5 @@ echo.
 echo ================================================================================
 echo.
 
-call "%~dp0nile-observer\scripts\start.bat" %*
+call "%~dp0wave-repo\run.bat" %*
 exit /b %errorlevel%
