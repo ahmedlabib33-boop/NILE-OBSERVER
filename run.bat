@@ -1,19 +1,19 @@
 @echo off
-setlocal EnableDelayedExpansion
+setlocal
+title Nile Observer - Local Application
 
 cls
 echo.
 echo ================================================================================
-echo   NILE OBSERVER - UNIFIED FREE RADAR SYSTEM
+echo   NILE OBSERVER - LOCAL APPLICATION
 echo ================================================================================
 echo.
-echo   Starting production application...
-echo   - OpenSky Network (Aircraft ADS-B)
-echo   - AISDecoder (Vessel AIS)
-echo   - NOAA NEXRAD (Weather Radar)
+echo   Starting the Wave application in wave-repo...
+echo   First run installs dependencies and builds the frontend.
+echo   Later runs reuse unchanged setup and build files.
 echo.
-echo   System: 100%% Free, Zero Configuration, Always ON
-echo   Status: Autonomous 30-second polling cycle
+echo   Live source availability is checked after API startup.
+echo   Polling and coverage depend on each configured provider.
 echo.
 
 if not exist "%~dp0wave-repo\run.bat" (
@@ -23,17 +23,17 @@ if not exist "%~dp0wave-repo\run.bat" (
   exit /b 2
 )
 
-echo   ✓ Launching application...
+echo   Launching application...
 echo.
-echo   Access URL: http://127.0.0.1:8000
-echo   Token: data/access-token
+echo   Access URL: http://127.0.0.1:8000/#radar
+echo   Login: local Wave account
+echo   API token file: wave-repo\data\access-token
+echo   APP_API_KEY overrides the token file when configured.
 echo.
-echo   Features:
-echo   - Satellite Radar interface (unified detection)
-echo   - Real-time observations
-echo   - Auto-update detection (see UPDATE button)
-echo   - Source diagnostics
-echo   - Historical scene access
+echo   Browser opens automatically after the API health check.
+echo   Source report: wave-repo\data\startup-status.log
+echo   Check current source status: run.bat -StatusOnly
+echo   Prepare without starting: run.bat -SetupOnly
 echo.
 echo ================================================================================
 echo.
