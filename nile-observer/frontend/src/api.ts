@@ -1,5 +1,15 @@
 export function getToken() {
-  return sessionStorage.getItem("nile_token") || "";
+  return localStorage.getItem("nile_token") || sessionStorage.getItem("nile_token") || "";
+}
+
+export function setToken(token: string) {
+  localStorage.setItem("nile_token", token);
+  sessionStorage.setItem("nile_token", token);
+}
+
+export function clearToken() {
+  localStorage.removeItem("nile_token");
+  sessionStorage.removeItem("nile_token");
 }
 export async function request(path: string, options: RequestInit = {}) {
   const headers = new Headers(options.headers);

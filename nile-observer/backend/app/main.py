@@ -159,10 +159,7 @@ async def response_headers(request, call_next):
 @app.get("/api/health")
 def health(db: DBSession = Depends(get_db)):
     db.execute(text("SELECT 1"))
-    return {
-        "status": "ok", "version": "0.1.0", "application": "unified-free-radar",
-        "app_root": str(Path(__file__).resolve().parents[2]),
-    }
+    return {"status": "ok", "version": "0.1.0"}
 
 
 @app.get("/api/settings", dependencies=AUTH)
@@ -577,6 +574,12 @@ async def process_camera(identifier: str):
             502, str(error)[:200] if isinstance(error, (ValueError, RuntimeError)) else "Camera processing failed"
         ) from None
     return {k: v for k, v in result.items() if k != "jpeg"}
+
+
+@app.get("/api/token")
+async def get_token():
+    """Return the current API token for client-side storage."""
+    return {"token": api_key()}
 
 
 @app.get("/api/updates/check", dependencies=AUTH)

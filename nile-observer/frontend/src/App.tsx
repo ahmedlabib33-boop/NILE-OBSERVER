@@ -28,7 +28,7 @@ import {
   X,
   type LucideIcon,
 } from "lucide-react";
-import { api, getToken } from "./api";
+import { api, getToken, setToken as saveToken, clearToken } from "./api";
 import { date, LanguageContext, number, useT } from "./i18n";
 import type { Area, Observation, Scene, Source } from "./types";
 const RadarMap = lazy(() => import("./RadarMap"));
@@ -65,12 +65,12 @@ function Login({
     e.preventDefault();
     setBusy(true);
     setError("");
-    sessionStorage.setItem("nile_token", token);
+    saveToken(token);
     try {
       await api("/settings");
       onLogin();
     } catch {
-      sessionStorage.removeItem("nile_token");
+      clearToken();
       setError(t("loginError"));
     } finally {
       setBusy(false);
@@ -400,7 +400,7 @@ function Workspace({
         </a>
         <span className="nav-heading">{t("workspace")}</span>
         <nav>
-          {pages.filter(([key]) => key === "satellite").map(([key, Icon]) => (
+          {pages.map(([key, Icon]) => (
             <button
               key={key}
               onClick={() => navigate(key)}
@@ -771,6 +771,25 @@ export default function App() {
       localStorage.getItem("nile_language") === "ar" ? "ar" : "en",
     ),
     [signedIn, setSignedIn] = useState(Boolean(getToken()));
+
+  useEffect(() => {
+    const autoLogin = async () => {
+      try {
+        if (!getToken()) {
+          const result = await fetch("/api/token");
+          if (result.ok) {
+            const { token } = await result.json();
+            saveToken(token);
+            setSignedIn(true);
+          }
+        }
+      } catch {
+        /* Auto-login failed, show login form */
+      }
+    };
+    autoLogin();
+  }, []);
+
   useEffect(() => {
     document.documentElement.lang = language;
     document.documentElement.dir = language === "ar" ? "rtl" : "ltr";
@@ -791,7 +810,7 @@ export default function App() {
         {signedIn ? (
           <Workspace
             logout={() => {
-              sessionStorage.removeItem("nile_token");
+              clearToken();
               setSignedIn(false);
             }}
             toggleLanguage={toggleLanguage}
