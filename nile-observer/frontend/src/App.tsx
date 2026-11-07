@@ -44,12 +44,8 @@ const SourceDiagnostics = lazy(() => import("./SourceDiagnostics"));
 import { Action, Empty, Evidence, Notice, ObservationTable } from "./ui";
 
 const pages: [string, LucideIcon][] = [
-  ["radar", Radar],
-  ["cameras", Camera],
-  ["traffic", TrafficCone],
-  ["aircraft", Plane],
-  ["marine", Ship],
   ["satellite", SatelliteIcon],
+  ["radar", Radar],
   ["hub", Layers],
   ["history", HistoryIcon],
   ["diagnostics", Activity],
@@ -236,7 +232,7 @@ function Workspace({
   const [page, setPage] = useState(
       pages.some(([p]) => p === location.hash.slice(1))
         ? location.hash.slice(1)
-        : "radar",
+        : "satellite",
     ),
     [nav, setNav] = useState(false),
     [sources, setSources] = useState<Source[]>([]),
@@ -385,7 +381,7 @@ function Workspace({
   return (
     <div className="app-shell">
       <aside className={"sidebar " + (nav ? "open" : "")}>
-        <a href="#radar" className="brand" onClick={() => navigate("radar")}>
+        <a href="#satellite" className="brand" onClick={() => navigate("satellite")}>
           <Radar size={28} strokeWidth={1.5} />
           <span>
             {t("brand")}
@@ -458,10 +454,10 @@ function Workspace({
             <div>
               <div className="eyebrow">
                 <span className="tiny-square" />
-                {page === "radar" ? t("localOnly") : t("workspace")}
+                {page === "satellite" ? t("localOnly") : t("workspace")}
               </div>
-              <h1>{page === "radar" ? t("radarTitle") : t(page)}</h1>
-              {page === "radar" && <p>{t("radarSubtitle")}</p>}
+              <h1>{page === "satellite" ? t("radarTitle") : t(page)}</h1>
+              {page === "satellite" && <p>{t("radarSubtitle")}</p>}
             </div>
             <span className="coordinate-stamp mono" dir="ltr">
               {area
@@ -488,7 +484,7 @@ function Workspace({
             </div>
           ) : (
             <>
-              {page === "radar" && (
+              {page === "satellite" && (
                 <>
                   <div className="metrics">
                     {[
@@ -705,109 +701,6 @@ function Workspace({
                       ))}
                     </div>
                   </section>
-                </>
-              )}
-              {page === "cameras" && <Cameras />}
-              {["aircraft", "marine"].includes(page) && (
-                <>
-                  <Notice>
-                    {t(page === "aircraft" ? "aircraftNote" : "marineNote")}
-                  </Notice>
-                  <section className="panel">
-                    <ObservationTable
-                      items={live.filter(
-                        (o) =>
-                          o.source_type ===
-                          (page === "aircraft" ? "adsb" : "ais"),
-                      )}
-                      onSelect={(o) => void select(o)}
-                    />
-                  </section>
-                  <Notice>
-                    {page === "aircraft" &&
-                    live.filter((o) => o.source_type === "adsb").length === 0
-                      ? t("emptySky")
-                      : t("noCoverage")}
-                  </Notice>
-                </>
-              )}
-              {page === "traffic" && (
-                <>
-                  <Notice>{t("trafficNote")}</Notice>
-                  <div className="traffic-grid">
-                    {live
-                      .filter((o) => o.source_type === "traffic")
-                      .map((o) => (
-                        <section
-                          className="panel padded"
-                          key={o.observation_id}
-                        >
-                          <span className="eyebrow">
-                            TomTom · {t("road_segment")}
-                          </span>
-                          <h2>
-                            {number(
-                              o.speed_mps === null ? null : o.speed_mps * 3.6,
-                              "km/h",
-                            )}
-                          </h2>
-                          <dl className="detail-grid">
-                            {[
-                              [
-                                "freeFlow",
-                                number(
-                                  o.details.free_flow_speed_kmh as
-                                    number | null,
-                                  "km/h",
-                                ),
-                              ],
-                              [
-                                "travelTime",
-                                number(
-                                  o.details.current_travel_time_s as
-                                    number | null,
-                                  "s",
-                                ),
-                              ],
-                              [
-                                "congestion",
-                                number(
-                                  typeof o.details.congestion_ratio === "number"
-                                    ? o.details.congestion_ratio * 100
-                                    : null,
-                                  "%",
-                                ),
-                              ],
-                              ["observed", date(o.observed_at)],
-                              ["retrievalTime", date(o.received_at)],
-                            ].map(([key, value]) => (
-                              <div key={key}>
-                                <dt>{t(key)}</dt>
-                                <dd>{value}</dd>
-                              </div>
-                            ))}
-                          </dl>
-                          <button
-                            className="text-link"
-                            onClick={() => void select(o)}
-                          >
-                            {t("evidence")} ↗
-                          </button>
-                        </section>
-                      ))}
-                  </div>
-                  {!live.some((o) => o.source_type === "traffic") && <Empty />}
-                  <section className="panel map-panel">
-                    <RadarMap
-                      area={area}
-                      observations={live.filter(
-                        (o) => o.source_type === "traffic",
-                      )}
-                      rings={rings}
-                      onSelect={(o) => void select(o)}
-                    />
-                  </section>
-                  <Notice>{t("notCertified")}</Notice>
                 </>
               )}
               {page === "satellite" && (
