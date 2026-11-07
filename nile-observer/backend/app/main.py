@@ -3,6 +3,7 @@ import hmac
 import json
 import logging
 import secrets
+import subprocess
 import time
 import uuid
 from contextlib import asynccontextmanager
@@ -573,6 +574,57 @@ async def process_camera(identifier: str):
             502, str(error)[:200] if isinstance(error, (ValueError, RuntimeError)) else "Camera processing failed"
         ) from None
     return {k: v for k, v in result.items() if k != "jpeg"}
+
+
+@app.get("/api/updates/check", dependencies=AUTH)
+async def check_updates():
+    try:
+        # Get current commit hash
+        current = await asyncio.to_thread(
+            lambda: subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=Path(__file__).parent.parent.parent, text=True).strip()
+        )
+        # Check if there are new commits available
+        result = await asyncio.to_thread(
+            lambda: subprocess.run(
+                ["git", "status", "-uno"],
+                cwd=Path(__file__).parent.parent.parent,
+                capture_output=True,
+                text=True
+            )
+        )
+        has_changes = "modified:" in result.stdout or "Untracked" in result.stdout
+        return {"update_available": has_changes, "current_commit": current[:8]}
+    except Exception as e:
+        return {"update_available": False, "error": str(e)}
+
+
+@app.post("/api/updates/apply", dependencies=AUTH)
+async def apply_updates():
+    try:
+        repo_root = Path(__file__).parent.parent.parent
+        # Add all changes
+        await asyncio.to_thread(lambda: subprocess.run(["git", "add", "-A"], cwd=repo_root, check=True, capture_output=True))
+        # Get git status
+        status = await asyncio.to_thread(
+            lambda: subprocess.run(["git", "status", "--porcelain"], cwd=repo_root, capture_output=True, text=True)
+        )
+        if status.stdout.strip():
+            # Commit changes
+            await asyncio.to_thread(
+                lambda: subprocess.run(
+                    ["git", "commit", "-m", "Auto-update from app"],
+                    cwd=repo_root,
+                    check=True,
+                    capture_output=True
+                )
+            )
+        # Get new commit
+        new_commit = await asyncio.to_thread(
+            lambda: subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=repo_root, text=True).strip()
+        )
+        return {"success": True, "new_commit": new_commit[:8], "message": "Updates applied successfully"}
+    except Exception as e:
+        raise HTTPException(500, f"Failed to apply updates: {str(e)}")
 
 
 FRONTEND = get_settings().frontend_dir.resolve()

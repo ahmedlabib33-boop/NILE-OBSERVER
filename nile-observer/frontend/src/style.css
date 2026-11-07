@@ -263,6 +263,32 @@ small {
 .connection-dot.connected {
   background: #f0f0f0;
 }
+.update-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  padding: 12px 34px;
+  background: linear-gradient(90deg, #1a3a3a 0%, #1a2a3a 100%);
+  border-bottom: 1px solid #2a5a5a;
+  font-size: 13px;
+  color: #90ee90;
+}
+.update-banner .button {
+  padding: 6px 16px;
+  font-size: 12px;
+  font-weight: 500;
+  background: #2a5a5a;
+  border: 1px solid #3a7a7a;
+  border-radius: 4px;
+}
+.update-banner .button:hover:not(:disabled) {
+  background: #3a7a7a;
+  border-color: #4a9a9a;
+}
+.update-banner .button:disabled {
+  opacity: 0.7;
+}
 .connection-dot.disconnected {
   border: 1px solid #bbb;
   background: none;

@@ -239,6 +239,8 @@ function Workspace({
     [selected, setSelected] = useState<Observation | null>(null),
     [connection, setConnection] = useState("connecting"),
     [error, setError] = useState(""),
+    [updateAvailable, setUpdateAvailable] = useState(false),
+    [updating, setUpdating] = useState(false),
     [, setTick] = useState(0);
   const currentPage = useRef(page);
   const reload = useCallback(async () => {
@@ -278,9 +280,22 @@ function Workspace({
       void reload().catch(() => {});
     }, 15000);
     const tick = setInterval(() => setTick((x) => x + 1), 5000);
+    const checkUpdates = async () => {
+      try {
+        const result = await api<{ update_available: boolean }>(
+          "/updates/check"
+        );
+        setUpdateAvailable(result.update_available);
+      } catch {
+        /* Update check failed, continue normally */
+      }
+    };
+    checkUpdates();
+    const updateCheckId = setInterval(checkUpdates, 30000);
     return () => {
       clearInterval(id);
       clearInterval(tick);
+      clearInterval(updateCheckId);
     };
   }, [reload]);
   useEffect(() => {
@@ -444,6 +459,29 @@ function Workspace({
             <span>{t(connection)}</span>
           </div>
         </header>
+        {updateAvailable && (
+          <div className="update-banner" role="status" aria-live="polite">
+            <span>🔄 New update is available</span>
+            <button
+              className="button"
+              disabled={updating}
+              onClick={async () => {
+                setUpdating(true);
+                try {
+                  await api("/updates/apply", { method: "POST" });
+                  setUpdateAvailable(false);
+                  window.location.reload();
+                } catch (e) {
+                  console.error("Update failed:", e);
+                } finally {
+                  setUpdating(false);
+                }
+              }}
+            >
+              {updating ? "Updating..." : "UPDATE"}
+            </button>
+          </div>
+        )}
         <main>
           <div className="page-intro">
             <div>
