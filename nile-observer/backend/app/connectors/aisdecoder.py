@@ -42,6 +42,9 @@ class AISDecoderConnector(Connector):
             vessel_response = await self._query_vesseldata(client, area)
             batch.observations.extend(vessel_response)
 
+            if not batch.observations:
+                raise RuntimeError("No verified public AIS response; vessel coverage is unavailable")
+
         except Exception as error:
             raise RuntimeError(f"AIS decoder error: {error}") from error
 

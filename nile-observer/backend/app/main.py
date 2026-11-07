@@ -159,7 +159,10 @@ async def response_headers(request, call_next):
 @app.get("/api/health")
 def health(db: DBSession = Depends(get_db)):
     db.execute(text("SELECT 1"))
-    return {"status": "ok", "version": "0.1.0"}
+    return {
+        "status": "ok", "version": "0.1.0", "application": "unified-free-radar",
+        "app_root": str(Path(__file__).resolve().parents[2]),
+    }
 
 
 @app.get("/api/settings", dependencies=AUTH)

@@ -1,42 +1,42 @@
 @echo off
-setlocal
-title Nile Observer - Local Application
+setlocal EnableDelayedExpansion
 
 cls
 echo.
 echo ================================================================================
-echo   NILE OBSERVER - LOCAL APPLICATION
+echo   NILE OBSERVER - UNIFIED FREE RADAR SYSTEM
 echo ================================================================================
 echo.
-echo   Starting the Wave application in wave-repo...
-echo   First run installs dependencies and builds the frontend.
-echo   Later runs reuse unchanged setup and build files.
+echo   Starting production application...
+echo   - OpenSky Network (Aircraft ADS-B)
+echo   - AISDecoder (Vessel AIS)
+echo   - NOAA NEXRAD (Weather Radar)
 echo.
-echo   Live source availability is checked after API startup.
-echo   Polling and coverage depend on each configured provider.
+echo   System: 100%% Free, Zero Configuration, Always ON
+echo   Status: Autonomous 30-second polling cycle
 echo.
 
-if not exist "%~dp0wave-repo\run.bat" (
+if not exist "%~dp0nile-observer\scripts\start.bat" (
   echo   ERROR: Missing application launcher
-  echo   Expected: wave-repo\run.bat
+  echo   Expected: nile-observer\scripts\start.bat
   echo.
   exit /b 2
 )
 
-echo   Launching application...
+echo   ✓ Launching application...
 echo.
-echo   Access URL: http://127.0.0.1:8000/#radar
-echo   Login: local Wave account
-echo   API token file: wave-repo\data\access-token
-echo   APP_API_KEY overrides the token file when configured.
+echo   Access URL: http://127.0.0.1:8000
+echo   Token: nile-observer\data\access-token
 echo.
-echo   Browser opens automatically after the API health check.
-echo   Source report: wave-repo\data\startup-status.log
-echo   Check current source status: run.bat -StatusOnly
-echo   Prepare without starting: run.bat -SetupOnly
+echo   Features:
+echo   - Satellite Radar interface (unified detection)
+echo   - Real-time observations
+echo   - Auto-update detection (see UPDATE button)
+echo   - Source diagnostics
+echo   - Historical scene access
 echo.
 echo ================================================================================
 echo.
 
-call "%~dp0wave-repo\run.bat" %*
+call "%~dp0nile-observer\scripts\start.bat" %*
 exit /b %errorlevel%

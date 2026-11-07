@@ -72,17 +72,7 @@ class NOAARadarConnector(Connector):
         except Exception:
             pass
 
-        # Fallback: use Cairo region stations (if querying Egypt)
-        if 29 < area.latitude < 31 and 30 < area.longitude < 32:
-            # Return mock station for demonstration
-            return {
-                "id": "CAIRO",
-                "lat": 30.12,
-                "lon": 31.30,
-                "name": "Cairo Region (via Suez/Alexandria)",
-            }
-
-        return None
+        raise RuntimeError("No verified NOAA radar station or supported reflectivity data for this area")
 
     async def _get_nexrad_data(self, client: httpx.AsyncClient, station: dict) -> dict | None:
         """Fetch latest NEXRAD radar data for station."""

@@ -135,8 +135,8 @@ CATALOG = [
         "unified_radar",
         "Unified Free Radar System",
         "radar",
-        60,
-        "100% free: OpenSky (aircraft) + AISDecoder (vessels) + NOAA (weather). Global coverage. Zero cost.",
+        30,
+        "Free source aggregation; receiver and provider coverage varies. See source diagnostics.",
         "https://opensky-network.org/",
     ),
 ]
@@ -170,7 +170,7 @@ def seed_sources(db):
         if identifier == "overpass_inventory":
             status, error = "pending", "No regional camera metadata query has been run"
         # Auto-enable unified_radar on creation
-        enabled = identifier == "unified_radar"
+        enabled = identifier in ("unified_radar", "phone")
         db.add(
             Source(
                 id=identifier,

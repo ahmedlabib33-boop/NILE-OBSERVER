@@ -1,5 +1,5 @@
 import asyncio
-from datetime import datetime
+from datetime import datetime, timezone
 import httpx
 from .base import Batch, Connector, RateLimited, request
 from ..schemas import Area, ObservationIn
@@ -51,7 +51,7 @@ class OpenSkyConnector(Connector):
             if not isinstance(data, dict) or "states" not in data:
                 return batch
 
-            for state in data.get("states", []):
+            for state in data.get("states") or []:
                 try:
                     # OpenSky returns array: [icao24, callsign, origin_country, time_position, last_contact, lon, lat, baro_altitude, on_ground, velocity, true_track, vertical_rate, sensors, geo_altitude, squawk, spi, position_source]
                     if len(state) < 17:
@@ -79,13 +79,13 @@ class OpenSkyConnector(Connector):
                         track_id=icao24,
                         latitude=latitude,
                         longitude=longitude,
-                        altitude=altitude if altitude and altitude > 0 else None,
-                        speed_mps=velocity if velocity and velocity > 0 else None,
-                        heading_deg=track if track and track >= 0 else None,
-                        confidence=0.85,  # Crowdsourced, varying quality
-                        location_accuracy_m=50 if not on_ground else 20,
-                        measurement_method="ads_b_network",
-                        observed_at=datetime.fromtimestamp(last_contact),
+                        altitude=altitude,
+                        speed_mps=velocity,
+                        heading_deg=track,
+                        confidence=None,
+                        location_accuracy_m=None,
+                        measurement_method="third_party_reported_position",
+                        observed_at=datetime.fromtimestamp(state[3], timezone.utc),
                         details={
                             "icao24": icao24,
                             "callsign": callsign,

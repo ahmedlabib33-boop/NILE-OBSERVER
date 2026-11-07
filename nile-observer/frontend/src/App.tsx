@@ -400,7 +400,7 @@ function Workspace({
         </a>
         <span className="nav-heading">{t("workspace")}</span>
         <nav>
-          {pages.map(([key, Icon]) => (
+          {pages.filter(([key]) => key === "satellite").map(([key, Icon]) => (
             <button
               key={key}
               onClick={() => navigate(key)}
